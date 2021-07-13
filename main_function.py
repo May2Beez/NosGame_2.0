@@ -15,8 +15,14 @@ import game_depends_function as games
 
 def click(NosTale_hwnd, key, delay=True, human=False, minigame='Fishpond'):
     if human and minigame == "Fishpond":
-        time.sleep(random.uniform(0.05, 0.22))
+        if random.randint(0, 6) == 0:
+            time.sleep(random.uniform(0.04, 0.12))
+    if human and minigame == 'Sawmill':
+        if random.randint(0, 10) == 0:
+            time.sleep(random.uniform(0.02, 0.07))
     win32gui.SendMessage(NosTale_hwnd, win32con.WM_KEYDOWN, key, 0x002C0001)
+    if human and minigame == "Fishpond":
+        time.sleep(random.uniform(0.06, 0.12))
     win32gui.SendMessage(NosTale_hwnd, win32con.WM_KEYUP, key, 0xC02C0001)
     if delay:
         time.sleep(0.60)
@@ -168,26 +174,24 @@ class MainBot(threading.Thread):
                 time.sleep(0.1)
 
             elif self.minigame == "Sawmill":
-                chop_place_1_y = self.data[0][1] - 60
+                chop_place_1_y = self.data[0][1] - 7
                 chop_place_1_x = self.data[0][0] - 5
-                chop_place_1 = img[int(chop_place_1_y):int(chop_place_1_y + 60),
-                               int(chop_place_1_x):int(chop_place_1_x + 10)].copy()
+                chop_place_1 = img[int(chop_place_1_y):int(chop_place_1_y + 7),
+                               int(chop_place_1_x):int(chop_place_1_x + 5)].copy()
 
                 # Bottom chop place
-                chop_place_2_y = self.data[1][1] - 60
+                chop_place_2_y = self.data[1][1] - 7
                 chop_place_2_x = self.data[1][0] - 5
-                chop_place_2 = img[int(chop_place_2_y):int(chop_place_2_y + 60),
-                               int(chop_place_2_x):int(chop_place_2_x + 10)].copy()
+                chop_place_2 = img[int(chop_place_2_y):int(chop_place_2_y + 7),
+                               int(chop_place_2_x):int(chop_place_2_x + 5)].copy()
 
                 if detect_color(games.Sawmill.wood_rgb, chop_place_1):
 
                     click(self.NosTale_hwnd, win32con.VK_LEFT, False, self.human, self.minigame)
-                    time.sleep(0.3)
 
                 elif detect_color(games.Sawmill.wood_rgb, chop_place_2):
 
                     click(self.NosTale_hwnd, win32con.VK_RIGHT, False, self.human, self.minigame)
-                    time.sleep(0.3)
 
             # Full IMG
             try:

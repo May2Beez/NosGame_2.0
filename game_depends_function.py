@@ -80,7 +80,7 @@ class Fishpond:
 
 
 class Sawmill:
-    wood_rgb = [(17, 49, 69), ]
+    wood_rgb = [(20, 62, 88), (21, 59, 84), (22, 62, 88), (20, 61, 86)]
 
     def __init__(self, hwnd):
         self.NosTale_hwnd = hwnd
