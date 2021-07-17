@@ -119,11 +119,15 @@ class Gui:
 
             is_human = BooleanVar(canvas, name="human" + str(index))
             check_mark_human = Checkbutton(canvas, variable=is_human, onvalue=True, offvalue=False)
-            canvas.create_window(665, 15, window=check_mark_human)
+            canvas.create_window(625, 15, window=check_mark_human)
+
+            hold = BooleanVar(canvas, name="hold" + str(index))
+            check_mark_hold = Checkbutton(canvas, variable=hold, onvalue=True, offvalue=False)
+            canvas.create_window(695, 15, window=check_mark_hold)
 
             is_checked = BooleanVar(canvas, name="run" + str(index))
             check_mark = Checkbutton(canvas, variable=is_checked, onvalue=True, offvalue=False)
-            canvas.create_window(745, 15, window=check_mark)
+            canvas.create_window(765, 15, window=check_mark)
 
             canvas.pack()
             CLIENTS_CANVAS[client] = canvas
@@ -136,14 +140,16 @@ class Gui:
                       Label(self.tk, text="Repeats Counter", font=font),
                       Label(self.tk, text="Level", font=font),
                       Label(self.tk, text="Human", font=font),
+                      Label(self.tk, text="Hold", font=font),
                       Label(self.tk, text="Run?", font=font)]
 
         label_info[0].place(relx=0.12, rely=0.24, anchor=CENTER)
         label_info[1].place(relx=0.28, rely=0.24, anchor=CENTER)
         label_info[2].place(relx=0.48, rely=0.24, anchor=CENTER)
         label_info[3].place(relx=0.65, rely=0.24, anchor=CENTER)
-        label_info[4].place(relx=0.8, rely=0.24, anchor=CENTER)
-        label_info[5].place(relx=0.9, rely=0.24, anchor=CENTER)
+        label_info[4].place(relx=0.75, rely=0.24, anchor=CENTER)
+        label_info[5].place(relx=0.84, rely=0.24, anchor=CENTER)
+        label_info[6].place(relx=0.92, rely=0.24, anchor=CENTER)
 
         container = Frame(self.tk, highlightbackground="black", highlightthickness=2)
         canvas = Canvas(container, width=800, height=200, bd=0, highlightthickness=0)
@@ -203,7 +209,7 @@ class Gui:
             index = 0
             for client in CLIENTS_CANVAS:
                 if CLIENTS_CANVAS[client].winfo_exists():
-                    repeats = level = human = minigame = repeats_widget = 0
+                    repeats = level = human = minigame = repeats_widget = hold = 0
                     for widget in CLIENTS_CANVAS[client].winfo_children():
                         if "entry" in str(widget):
                             if widget.get():
@@ -214,15 +220,20 @@ class Gui:
                             minigame = widget.getvar(name="minigame" + str(index))
                         elif "optionmenu2" in str(widget):
                             level = widget.getvar(name="level" + str(index))
-                        elif "checkbutton" in str(widget) and "checkbutton2" not in str(widget):
+                        elif "checkbutton" in str(widget) and "checkbutton2" not in str(widget) and "checkbutton3" not in str(widget):
                             try:
                                 human = widget.getvar(name="human" + str(index))
                             except:
                                 pass
                         elif "checkbutton2" in str(widget):
                             try:
+                                hold = widget.getvar(name="hold" + str(index))
+                            except:
+                                pass
+                        elif "checkbutton3" in str(widget):
+                            try:
                                 if widget.getvar(name="run" + str(index)):
-                                    bot = run_bot.Bot(client, minigame, repeats, level, human, self, repeats_widget)
+                                    bot = run_bot.Bot(client, minigame, repeats, level, human, self, repeats_widget, hold)
                                     bot.start()
                                     BOTS.append(bot)
                             except:

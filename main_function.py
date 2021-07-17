@@ -13,25 +13,29 @@ import win32api
 import game_depends_function as games
 
 
-def click(NosTale_hwnd, key, delay=True, human=False, minigame='Fishpond'):
-    if human and minigame == "Fishpond":
-        if random.randint(0, 6) == 0:
-            time.sleep(random.uniform(0.04, 0.12))
+def click(NosTale_hwnd, key, delay=True, human=False, minigame='Fishpond', hold=False):
     if human and minigame == 'Sawmill':
-        if random.randint(0, 10) == 0:
-            time.sleep(random.uniform(0.02, 0.07))
+        if random.randint(0, 12) == 0:
+            time.sleep(random.uniform(0.03, 0.08))
     win32gui.SendMessage(NosTale_hwnd, win32con.WM_KEYDOWN, key, 0x002C0001)
-    if human and minigame == "Fishpond":
+    if human and minigame == "Combo_fish":
+        time.sleep(random.uniform(0.05, 0.11))
+    if human and minigame == "Fishpond" and not hold:
         time.sleep(random.uniform(0.06, 0.12))
+    if human and minigame == "Fishpond" and hold:
+        time.sleep(random.uniform(0.41, 0.44))
+    if not human and minigame == "Fishpond" and hold:
+        time.sleep(0.41)
     win32gui.SendMessage(NosTale_hwnd, win32con.WM_KEYUP, key, 0xC02C0001)
     if delay:
-        time.sleep(0.60)
+        time.sleep(0.56)
 
 
 class MainBot(threading.Thread):
-    def __init__(self, minigame, NosTale_hwnd, NosTale_window, level, human, repeats, gui, repeats_widget):
+    def __init__(self, minigame, NosTale_hwnd, NosTale_window, level, human, repeats, gui, repeats_widget, hold):
         super().__init__()
         self.minigame = minigame
+        self.hold = hold
         self.repeats_widget = repeats_widget
         self.gui = gui
         self.NosTale_hwnd = NosTale_hwnd
@@ -156,22 +160,40 @@ class MainBot(threading.Thread):
                 else:
 
                     if detect_color(games.Fishpond.catch_rgb, left_bob_img):
-                        if not games.check_bat_over_bob(left_bob_img, games.Fishpond.bat_pixel_rgb):
-                            click(self.NosTale_hwnd, win32con.VK_LEFT, True, self.human)
+                        if not self.hold:
+                            if not games.check_bat_over_bob(left_bob_img, games.Fishpond.bat_pixel_rgb):
+                                click(self.NosTale_hwnd, win32con.VK_LEFT, True, self.human, self.minigame, self.hold)
+                            else:
+                                click(self.NosTale_hwnd, win32con.VK_LEFT, True, self.human, self.minigame, True)
+                        else:
+                            click(self.NosTale_hwnd, win32con.VK_LEFT, True, self.human, self.minigame, self.hold)
 
                     elif detect_color(games.Fishpond.catch_rgb, bot_bob_img):
-                        if not games.check_bat_over_bob(bot_bob_img, games.Fishpond.bat_pixel_rgb):
-                            click(self.NosTale_hwnd, win32con.VK_DOWN, True, self.human)
+                        if not self.hold:
+                            if not games.check_bat_over_bob(bot_bob_img, games.Fishpond.bat_pixel_rgb):
+                                click(self.NosTale_hwnd, win32con.VK_DOWN, True, self.human, self.minigame, self.hold)
+                            else:
+                                click(self.NosTale_hwnd, win32con.VK_DOWN, True, self.human, self.minigame, True)
+                        else:
+                            click(self.NosTale_hwnd, win32con.VK_DOWN, True, self.human, self.minigame, self.hold)
 
                     elif detect_color(games.Fishpond.catch_rgb, top_bob_img):
-                        if not games.check_bat_over_bob(top_bob_img, games.Fishpond.bat_pixel_rgb):
-                            click(self.NosTale_hwnd, win32con.VK_UP, True, self.human)
+                        if not self.hold:
+                            if not games.check_bat_over_bob(top_bob_img, games.Fishpond.bat_pixel_rgb):
+                                click(self.NosTale_hwnd, win32con.VK_UP, True, self.human, self.minigame, self.hold)
+                            else:
+                                click(self.NosTale_hwnd, win32con.VK_UP, True, self.human, self.minigame, True)
+                        else:
+                            click(self.NosTale_hwnd, win32con.VK_UP, True, self.human, self.minigame, self.hold)
 
                     elif detect_color(games.Fishpond.catch_rgb, right_bob_img):
-                        if not games.check_bat_over_bob(right_bob_img, games.Fishpond.bat_pixel_rgb):
-                            click(self.NosTale_hwnd, win32con.VK_RIGHT, True, self.human)
-
-                time.sleep(0.1)
+                        if not self.hold:
+                            if not games.check_bat_over_bob(right_bob_img, games.Fishpond.bat_pixel_rgb):
+                                click(self.NosTale_hwnd, win32con.VK_RIGHT, True, self.human, self.minigame, self.hold)
+                            else:
+                                click(self.NosTale_hwnd, win32con.VK_RIGHT, True, self.human, self.minigame, True)
+                        else:
+                            click(self.NosTale_hwnd, win32con.VK_RIGHT, True, self.human, self.minigame, self.hold)
 
             elif self.minigame == "Sawmill":
                 chop_place_1_y = self.data[0][1] - 7
@@ -238,6 +260,9 @@ class MainBot(threading.Thread):
                     if detect_color(StaticData.result_window_rgb, result_window_crop_img):
                         break
 
+                    if self.STOPPED:
+                        exit(0)
+
                     if self.minigame == "Fishpond":
                         click(self.NosTale_hwnd, win32con.VK_LEFT, False, False)
 
@@ -247,11 +272,14 @@ class MainBot(threading.Thread):
 
                 # Click Reward button
                 while True:
+
                     try:
                         img = self.NosTale_window.get_screenshot()
                         break
                     except:
                         continue
+                if self.STOPPED:
+                    exit(0)
                 x, y = static_data.get_reward_position(img)
                 lParam = win32api.MAKELONG(x, y)
                 click_at(lParam, self.NosTale_hwnd)
@@ -264,6 +292,8 @@ class MainBot(threading.Thread):
                         break
                     except:
                         continue
+                if self.STOPPED:
+                    exit(0)
                 x, y = static_data.get_level_reward_position(img, self.level)
                 lParam = win32api.MAKELONG(x, y)
                 click_at(lParam, self.NosTale_hwnd)
@@ -288,6 +318,9 @@ class MainBot(threading.Thread):
                     self.repeats_widget.delete(0, END)
                     self.repeats_widget.insert(0, str(self.repeats_counter) + "/" + str(self.repeats))
                     self.repeats_widget.configure(state='disabled')
+
+                if self.STOPPED:
+                    exit(0)
 
                 lParam = win32api.MAKELONG(chosen_options_x, chosen_options_y)
                 click_at(lParam, self.NosTale_hwnd)
@@ -315,10 +348,16 @@ class MainBot(threading.Thread):
                     self.repeats_widget.insert(0, str(self.repeats_counter) + "/" + str(self.repeats))
                     self.repeats_widget.configure(state='disabled')
 
+                    if self.STOPPED:
+                        exit(0)
+
                     win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYDOWN, win32con.VK_ESCAPE, 0x002C0001)
                     win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYUP, win32con.VK_ESCAPE, 0xC02C0001)
 
                     chosen_options_x, chosen_options_y = static_data.get_stop_position(img)
+
+                    if self.STOPPED:
+                        exit(0)
 
                     lParam = win32api.MAKELONG(chosen_options_x, chosen_options_y)
                     click_at(lParam, self.NosTale_hwnd)
@@ -327,6 +366,8 @@ class MainBot(threading.Thread):
                     coupon = vision.Vision(cv2.imread(resource_path("images/coupon_check.jpg")))
 
                     for i in range(4):
+                        if self.STOPPED:
+                            exit(0)
                         win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYDOWN, 0x30, 0x002C0001)
                         win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYUP, 0x30, 0xC02C0001)
                         time.sleep(0.2)
@@ -355,6 +396,9 @@ class MainBot(threading.Thread):
                                 found = True
                                 break
                             time.sleep(0.2)
+
+                        if self.STOPPED:
+                            exit(0)
 
                         if found:
                             win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0x002C0001)

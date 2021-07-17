@@ -5,7 +5,7 @@ from game_depends_function import *
 
 
 class Bot(threading.Thread):
-    def __init__(self, hwnd, minigame, repeats, level, human, gui, repeats_widget):
+    def __init__(self, hwnd, minigame, repeats, level, human, gui, repeats_widget, hold):
         super().__init__()
         self.gui = gui
         self.repeats_widget = repeats_widget
@@ -15,6 +15,7 @@ class Bot(threading.Thread):
         self.level = level
         self.human = human
         self.searching = True
+        self.hold = hold
         self.NosTale_window = WindowCapture.WindowCapture(window_hwnd=self.NosTale_hwnd)
 
     def run(self):
@@ -31,7 +32,8 @@ class Bot(threading.Thread):
                                                    self.human,
                                                    self.repeats,
                                                    self.gui,
-                                                   self.repeats_widget)
+                                                   self.repeats_widget,
+                                                   self.hold)
                 self.client.setDaemon(True)
                 self.client.if_start_exists(True)
                 if self.minigame == "Fishpond":

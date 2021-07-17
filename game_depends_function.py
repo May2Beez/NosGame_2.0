@@ -33,19 +33,19 @@ def solve_combo_fish(NosTale_window, data, human, hwnd):
         crop_img = img[int(y - 10):int(y + 25), int(x - 160):int(x + 230)].copy()
 
         if arrow_left.find(crop_img, threshold=0.95):
-            main_function.click(hwnd, win32con.VK_LEFT, False, human)
+            main_function.click(hwnd, win32con.VK_LEFT, False, human, minigame="Combo_fish")
             combo += 1
 
         elif arrow_up.find(crop_img, threshold=0.95):
-            main_function.click(hwnd, win32con.VK_UP, False, human)
+            main_function.click(hwnd, win32con.VK_UP, False, human, minigame="Combo_fish")
             combo += 1
 
         elif arrow_right.find(crop_img, threshold=0.95):
-            main_function.click(hwnd, win32con.VK_RIGHT, False, human)
+            main_function.click(hwnd, win32con.VK_RIGHT, False, human, minigame="Combo_fish")
             combo += 1
 
         elif arrow_down.find(crop_img, threshold=0.95):
-            main_function.click(hwnd, win32con.VK_DOWN, False, human)
+            main_function.click(hwnd, win32con.VK_DOWN, False, human, minigame="Combo_fish")
             combo += 1
 
         time.sleep(0.1)
