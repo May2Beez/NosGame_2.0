@@ -15,8 +15,9 @@ import game_depends_function as games
 
 def click(NosTale_hwnd, key, delay=True, human=False, minigame='Fishpond', hold=False):
     if human and minigame == 'Sawmill':
-        if random.randint(0, 12) == 0:
-            time.sleep(random.uniform(0.03, 0.08))
+        if random.randint(0, 11) == 0:
+            time.sleep(random.uniform(0.03, 0.09))
+
     win32gui.SendMessage(NosTale_hwnd, win32con.WM_KEYDOWN, key, 0x002C0001)
     if human and minigame == "Combo_fish":
         time.sleep(random.uniform(0.05, 0.11))
@@ -28,7 +29,7 @@ def click(NosTale_hwnd, key, delay=True, human=False, minigame='Fishpond', hold=
         time.sleep(0.41)
     win32gui.SendMessage(NosTale_hwnd, win32con.WM_KEYUP, key, 0xC02C0001)
     if delay:
-        time.sleep(0.56)
+        time.sleep(0.03)
 
 
 class MainBot(threading.Thread):
@@ -111,6 +112,7 @@ class MainBot(threading.Thread):
         self.thread.start()
 
     def start_game(self, color='pale green'):
+        global HOLDED_FISHRODS
         self.gui.change_repeats(self.repeats_counter, self.repeats_widget, self.repeats, color)
         self.score = threading.Thread(target=self.checking_score_thread)
         combo_data = None
@@ -141,14 +143,14 @@ class MainBot(threading.Thread):
                 continue
 
             if self.minigame == "Fishpond":
-                left_bob_img = img[int(self.data[0][1] - 19):int(self.data[0][1] - 16),
-                               int(self.data[0][0] + 8):int(self.data[0][0] + 14)].copy()
-                bot_bob_img = img[int(self.data[1][1] - 19):int(self.data[1][1] - 16),
-                              int(self.data[1][0] + 8):int(self.data[1][0] + 14)].copy()
-                top_bob_img = img[int(self.data[2][1] - 19):int(self.data[2][1] - 16),
-                              int(self.data[2][0] + 8):int(self.data[2][0] + 14)].copy()
-                right_bob_img = img[int(self.data[3][1] - 19):int(self.data[3][1] - 16),
-                                int(self.data[3][0] + 8):int(self.data[3][0] + 14)].copy()
+                left_bob_img = img[int(self.data[0][1] - 20):int(self.data[0][1] - 15),
+                               int(self.data[0][0] - 5):int(self.data[0][0])].copy()
+                bot_bob_img = img[int(self.data[1][1] - 22):int(self.data[1][1] - 17),
+                               int(self.data[1][0] - 5):int(self.data[1][0])].copy()
+                top_bob_img = img[int(self.data[2][1] - 22):int(self.data[2][1] - 17),
+                               int(self.data[2][0]):int(self.data[2][0]) + 5].copy()
+                right_bob_img = img[int(self.data[3][1] - 22):int(self.data[3][1] - 17),
+                               int(self.data[3][0]):int(self.data[3][0]) + 5].copy()
 
                 combo_fish_crop_img = img[int(self.data[0][1] - 16):int(self.data[0][1] - 13),
                                       int(self.data[0][0] - 30):int(self.data[0][0] - 25)].copy()
@@ -159,7 +161,7 @@ class MainBot(threading.Thread):
 
                 else:
 
-                    if detect_color(games.Fishpond.catch_rgb, left_bob_img):
+                    if detect_color(games.Fishpond.catch_rgb, left_bob_img) and detect_color(games.Fishpond.bob_rgb, left_bob_img):
                         if not self.hold:
                             if not games.check_bat_over_bob(left_bob_img, games.Fishpond.bat_pixel_rgb):
                                 click(self.NosTale_hwnd, win32con.VK_LEFT, True, self.human, self.minigame, self.hold)
@@ -168,7 +170,7 @@ class MainBot(threading.Thread):
                         else:
                             click(self.NosTale_hwnd, win32con.VK_LEFT, True, self.human, self.minigame, self.hold)
 
-                    elif detect_color(games.Fishpond.catch_rgb, bot_bob_img):
+                    elif detect_color(games.Fishpond.catch_rgb, bot_bob_img) and detect_color(games.Fishpond.bob_rgb, bot_bob_img):
                         if not self.hold:
                             if not games.check_bat_over_bob(bot_bob_img, games.Fishpond.bat_pixel_rgb):
                                 click(self.NosTale_hwnd, win32con.VK_DOWN, True, self.human, self.minigame, self.hold)
@@ -177,7 +179,7 @@ class MainBot(threading.Thread):
                         else:
                             click(self.NosTale_hwnd, win32con.VK_DOWN, True, self.human, self.minigame, self.hold)
 
-                    elif detect_color(games.Fishpond.catch_rgb, top_bob_img):
+                    elif detect_color(games.Fishpond.catch_rgb, top_bob_img) and detect_color(games.Fishpond.bob_rgb, top_bob_img):
                         if not self.hold:
                             if not games.check_bat_over_bob(top_bob_img, games.Fishpond.bat_pixel_rgb):
                                 click(self.NosTale_hwnd, win32con.VK_UP, True, self.human, self.minigame, self.hold)
@@ -186,7 +188,7 @@ class MainBot(threading.Thread):
                         else:
                             click(self.NosTale_hwnd, win32con.VK_UP, True, self.human, self.minigame, self.hold)
 
-                    elif detect_color(games.Fishpond.catch_rgb, right_bob_img):
+                    elif detect_color(games.Fishpond.catch_rgb, right_bob_img) and detect_color(games.Fishpond.bob_rgb, right_bob_img):
                         if not self.hold:
                             if not games.check_bat_over_bob(right_bob_img, games.Fishpond.bat_pixel_rgb):
                                 click(self.NosTale_hwnd, win32con.VK_RIGHT, True, self.human, self.minigame, self.hold)
@@ -196,16 +198,26 @@ class MainBot(threading.Thread):
                             click(self.NosTale_hwnd, win32con.VK_RIGHT, True, self.human, self.minigame, self.hold)
 
             elif self.minigame == "Sawmill":
-                chop_place_1_y = self.data[0][1] - 7
+                chop_place_1_y = self.data[0][1] - 12
                 chop_place_1_x = self.data[0][0] - 5
-                chop_place_1 = img[int(chop_place_1_y):int(chop_place_1_y + 7),
-                               int(chop_place_1_x):int(chop_place_1_x + 5)].copy()
+                chop_place_1 = img[int(chop_place_1_y):int(chop_place_1_y + 12),
+                               int(chop_place_1_x):int(chop_place_1_x + 15)].copy()
 
                 # Bottom chop place
-                chop_place_2_y = self.data[1][1] - 7
+                chop_place_2_y = self.data[1][1] - 12
                 chop_place_2_x = self.data[1][0] - 5
-                chop_place_2 = img[int(chop_place_2_y):int(chop_place_2_y + 7),
-                               int(chop_place_2_x):int(chop_place_2_x + 5)].copy()
+                chop_place_2 = img[int(chop_place_2_y):int(chop_place_2_y + 12),
+                               int(chop_place_2_x):int(chop_place_2_x + 15)].copy()
+
+                cv2.rectangle(img, (chop_place_1_x, chop_place_1_y), (chop_place_1_x + 10, chop_place_1_y + 12),
+                              (255, 0, 0), 1)
+                cv2.rectangle(img, (chop_place_2_x, chop_place_2_y), (chop_place_2_x + 10, chop_place_2_y + 12),
+                              (255, 0, 0), 1)
+
+                cv2.imshow('test', img)
+
+                if cv2.waitKey(1) == ord('q'):
+                    break
 
                 if detect_color(games.Sawmill.wood_rgb, chop_place_1):
 

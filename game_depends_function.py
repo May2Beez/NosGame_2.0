@@ -54,9 +54,10 @@ def solve_combo_fish(NosTale_window, data, human, hwnd):
 
 
 class Fishpond:
-    bat_pixel_rgb = [(33, 36, 170), (32, 35, 170), (39, 49, 210)]
+    bat_pixel_rgb = [(2, 0, 3), (2, 2, 4)]
     catch_rgb = [(255, 247, 198), ]
     combo_fish_rgb = [(1, 218, 255), ]
+    bob_rgb = [(0, 16, 255), (6, 21, 251), (15, 19, 202), (20, 32, 197)]
 
     def __init__(self, hwnd):
         self.NosTale_hwnd = hwnd
@@ -80,7 +81,7 @@ class Fishpond:
 
 
 class Sawmill:
-    wood_rgb = [(20, 62, 88), (21, 59, 84), (22, 62, 88), (20, 61, 86)]
+    wood_rgb = [(20, 62, 88), (21, 59, 84)]
 
     def __init__(self, hwnd):
         self.NosTale_hwnd = hwnd
