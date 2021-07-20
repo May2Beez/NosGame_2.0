@@ -112,7 +112,6 @@ class MainBot(threading.Thread):
         self.thread.start()
 
     def start_game(self, color='pale green'):
-        global HOLDED_FISHRODS
         self.gui.change_repeats(self.repeats_counter, self.repeats_widget, self.repeats, color)
         self.score = threading.Thread(target=self.checking_score_thread)
         combo_data = None
@@ -208,16 +207,6 @@ class MainBot(threading.Thread):
                 chop_place_2_x = self.data[1][0] - 5
                 chop_place_2 = img[int(chop_place_2_y):int(chop_place_2_y + 12),
                                int(chop_place_2_x):int(chop_place_2_x + 15)].copy()
-
-                cv2.rectangle(img, (chop_place_1_x, chop_place_1_y), (chop_place_1_x + 10, chop_place_1_y + 12),
-                              (255, 0, 0), 1)
-                cv2.rectangle(img, (chop_place_2_x, chop_place_2_y), (chop_place_2_x + 10, chop_place_2_y + 12),
-                              (255, 0, 0), 1)
-
-                cv2.imshow('test', img)
-
-                if cv2.waitKey(1) == ord('q'):
-                    break
 
                 if detect_color(games.Sawmill.wood_rgb, chop_place_1):
 
