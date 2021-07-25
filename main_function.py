@@ -65,7 +65,8 @@ class MainBot(threading.Thread):
 
                 img = self.NosTale_window.get_screenshot()
 
-            except Exception:
+            except Exception as e:
+                print(e)
                 continue
 
             score_img_x = int(img.shape[1] / 2 - 181)
@@ -87,7 +88,8 @@ class MainBot(threading.Thread):
         while time.time() - start < 5:
             try:
                 img = self.NosTale_window.get_screenshot()
-            except:
+            except Exception as e:
+                print(e)
                 continue
             x, y = get_start_game_position(img)
             img = img[(y - 1):(y + 1), (x - 1):(x + 1)].copy()
@@ -138,7 +140,8 @@ class MainBot(threading.Thread):
 
             try:
                 img = self.NosTale_window.get_screenshot()
-            except Exception:
+            except Exception as e:
+                print(e)
                 continue
 
             if self.minigame == "Fishpond":
@@ -196,6 +199,8 @@ class MainBot(threading.Thread):
                         else:
                             click(self.NosTale_hwnd, win32con.VK_RIGHT, True, self.human, self.minigame, self.hold)
 
+                    time.sleep(0.1)
+
             elif self.minigame == "Sawmill":
                 chop_place_1_y = self.data[0][1] - 12
                 chop_place_1_x = self.data[0][0] - 5
@@ -219,7 +224,8 @@ class MainBot(threading.Thread):
             # Full IMG
             try:
                 fail_img = self.NosTale_window.get_screenshot()
-            except Exception:
+            except Exception as e:
+                print(e)
                 continue
 
             # IMG for result window
@@ -249,7 +255,8 @@ class MainBot(threading.Thread):
 
                     try:
                         img = self.NosTale_window.get_screenshot()
-                    except Exception:
+                    except Exception as e:
+                        print(e)
                         continue
 
                     # IMG for result window
@@ -277,8 +284,10 @@ class MainBot(threading.Thread):
                     try:
                         img = self.NosTale_window.get_screenshot()
                         break
-                    except:
+                    except Exception as e:
+                        print(e)
                         continue
+
                 if self.STOPPED:
                     exit(0)
                 x, y = static_data.get_reward_position(img)
@@ -291,8 +300,10 @@ class MainBot(threading.Thread):
                     try:
                         img = self.NosTale_window.get_screenshot()
                         break
-                    except:
+                    except Exception as e:
+                        print(e)
                         continue
+
                 if self.STOPPED:
                     exit(0)
                 x, y = static_data.get_level_reward_position(img, self.level)
@@ -304,7 +315,8 @@ class MainBot(threading.Thread):
                     try:
                         img = self.NosTale_window.get_screenshot()
                         break
-                    except:
+                    except Exception as e:
+                        print(e)
                         continue
 
                 if self.repeats_counter < self.repeats:
@@ -331,7 +343,8 @@ class MainBot(threading.Thread):
                     try:
                         end_img = self.NosTale_window.get_screenshot()
                         break
-                    except:
+                    except Exception as e:
+                        print(e)
                         continue
 
                 # IMG for result window
@@ -366,12 +379,11 @@ class MainBot(threading.Thread):
 
                     coupon = vision.Vision(cv2.imread(resource_path("images/coupon_check.jpg")))
 
+                    used_atleast_one = False
+
                     for i in range(4):
                         if self.STOPPED:
                             exit(0)
-                        win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYDOWN, 0x30, 0x002C0001)
-                        win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYUP, 0x30, 0xC02C0001)
-                        time.sleep(0.2)
                         win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYDOWN, 0x30, 0x002C0001)
                         win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYUP, 0x30, 0xC02C0001)
                         time.sleep(0.2)
@@ -380,7 +392,8 @@ class MainBot(threading.Thread):
                             try:
                                 coupon_img = self.NosTale_window.get_screenshot()
                                 break
-                            except:
+                            except Exception as e:
+                                print(e)
                                 continue
 
                         x_off = coupon_img.shape[1] / 2 - 150
@@ -395,6 +408,7 @@ class MainBot(threading.Thread):
                         while True and time.time() - time_start < 3:
                             if coupon.find(coupon_img, threshold=0.7):
                                 found = True
+                                used_atleast_one = True
                                 break
                             time.sleep(0.2)
 
@@ -404,10 +418,12 @@ class MainBot(threading.Thread):
                         if found:
                             win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0x002C0001)
                             win32gui.SendMessage(self.NosTale_hwnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0xC02C0001)
-                        else:
+                        if not used_atleast_one:
                             self.STOPPED = True
                             self.RUNNING = False
                             self.FAILED = False
+                            break
+                        elif used_atleast_one and not found:
                             break
                         time.sleep(0.6)
 
@@ -421,7 +437,8 @@ class MainBot(threading.Thread):
                         try:
                             img = self.NosTale_window.get_screenshot()
                             break
-                        except:
+                        except Exception as e:
+                            print(e)
                             continue
 
                     open_game_x = img.shape[1] / 2 - 200 / 2
@@ -454,7 +471,8 @@ class MainBot(threading.Thread):
                     try:
                         img = self.NosTale_window.get_screenshot()
                         break
-                    except:
+                    except Exception as e:
+                        print(e)
                         continue
                 chosen_options_x, chosen_options_y = static_data.get_play_again_after_fail_position(img)
 
